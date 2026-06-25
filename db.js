@@ -1,12 +1,16 @@
 // MySQL confession database setup
 const mysql = require('mysql2');
 
-// Fill in your MySQL connection details
+const useSsl = process.env.DB_SSL === '1' || process.env.DB_SSL === 'true';
+
+// Read connection settings from environment so the app works locally and on Railway.
 const db = mysql.createConnection({
-  host: 'localhost',      // e.g., 'localhost' or your MySQL server
-  user: 'SEAdmin',      // your MySQL username
-  password: 'SintokEchoes123',  // your MySQL password
-  database: 'confessiondb'     // your MySQL database name
+  host: process.env.DB_HOST || 'localhost',
+  port: Number(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER || 'SEAdmin',
+  password: process.env.DB_PASSWORD || 'SintokEchoes123',
+  database: process.env.DB_NAME || 'confessiondb',
+  ssl: useSsl ? { rejectUnauthorized: false } : undefined
 });
 
 // Connect to MySQL and create table if it doesn't exist
