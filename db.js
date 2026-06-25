@@ -2,16 +2,33 @@
 const mysql = require('mysql2');
 
 const useSsl = process.env.DB_SSL === '1' || process.env.DB_SSL === 'true';
+const databaseUrl = process.env.DATABASE_URL || process.env.MYSQL_URL || process.env.JAWSDB_URL;
+
+function createConfigFromUrl(urlString) {
+  const url = new URL(urlString);
+  return {
+    host: url.hostname,
+    port: Number(url.port || 3306),
+    user: decodeURIComponent(url.username || ''),
+    password: decodeURIComponent(url.password || ''),
+    database: (url.pathname || '').replace(/^\//, '') || 'confessiondb',
+    ssl: useSsl ? { rejectUnauthorized: false } : undefined
+  };
+}
 
 // Read connection settings from environment so the app works locally and on Railway.
-const db = mysql.createConnection({
-  host: process.env.DB_HOST || 'localhost',
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER || 'SEAdmin',
-  password: process.env.DB_PASSWORD || 'SintokEchoes123',
-  database: process.env.DB_NAME || 'confessiondb',
-  ssl: useSsl ? { rejectUnauthorized: false } : undefined
-});
+const db = mysql.createConnection(
+  databaseUrl
+    ? createConfigFromUrl(databaseUrl)
+    : {
+        host: process.env.MYSQLHOST || process.env.DB_HOST || 'localhost',
+        port: Number(process.env.MYSQLPORT || process.env.DB_PORT || 3306),
+        user: process.env.MYSQLUSER || process.env.DB_USER || 'SEAdmin',
+        password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || 'SintokEchoes123',
+        database: process.env.MYSQLDATABASE || process.env.DB_NAME || 'confessiondb',
+        ssl: useSsl ? { rejectUnauthorized: false } : undefined
+      }
+);
 
 // Connect to MySQL and create table if it doesn't exist
 db.connect((err) => {
