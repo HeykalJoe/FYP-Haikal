@@ -1,0 +1,344 @@
+/* Full-page background image below all elements */
+/* Removed decorative purple background image per request; keep a neutral, unobtrusive base */
+/* Full-screen decorative background image (subtle, unobtrusive) */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background: url('bgimage3.jpg') no-repeat center center fixed;
+  background-size: cover;
+  opacity: 1; /* show image fully */
+  pointer-events: none;
+}
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: none;
+  min-height: 100vh;
+  color: #000;
+  overflow-x: hidden;
+}
+
+/* Reserve space at top for the fixed navbar so headers don't get hidden */
+:root {
+  --navbar-space: 120px; /* adjust if your navbar height changes */
+}
+
+body {
+  padding-top: var(--navbar-space);
+}
+
+/* Ensure anchor scrolling and focus reveal content below the fixed navbar */
+html { scroll-padding-top: var(--navbar-space); }
+
+/* Page transition helpers: fade + slight vertical movement */
+body.page-preload {
+  opacity: 0;
+  transform: translateY(8px);
+}
+body.page-exit {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+body {
+  transition: opacity 320ms ease, transform 320ms ease;
+}
+
+/* Zoom transitions for SPA section switching (Get Started button) */
+.main-container {
+  transition: transform 360ms cubic-bezier(.2,.9,.3,1), opacity 360ms cubic-bezier(.2,.9,.3,1);
+  transform-origin: center top;
+}
+.main-container.zoom-out {
+  transform: scale(0.86);
+  opacity: 0;
+}
+.main-container.zoom-in {
+  transform: scale(1.02);
+  opacity: 0;
+}
+.main-container.zoom-in-active {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Navigation */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 60px;
+  background: rgba(6,10,20,0.55); /* dark translucent backdrop for contrast */
+  border: 1px solid rgba(255,255,255,0.06); /* subtle frame */
+  box-shadow: 0 10px 30px rgba(2,6,20,0.45); /* depth */
+  backdrop-filter: blur(6px); /* soft blur of background image */
+  border-radius: 10px;
+  position: fixed; /* keep navbar visible while scrolling */
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 9999;
+  margin: 0 auto;
+  max-width: calc(100% - 32px);
+}
+
+.nav-brand {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Logo image used in place of text brand */
+.nav-brand .site-logo {
+  display: block;
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+  max-width: 280px;
+}
+
+/* Language toggle color (force to white for readability) */
+#lang-toggle {
+  color: #fff !important;
+}
+
+/* Back button in navbar (top-left) */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  margin-right: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+}
+.back-btn:hover { background: rgba(255,255,255,0.12); }
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  align-items: center;
+}
+
+.nav-link {
+  color: rgba(255,255,255,0.92);
+  text-decoration: none;
+  font-size: 18px;
+  transition: color 160ms ease, transform 160ms ease;
+  padding: 6px 8px;
+}
+
+.nav-link:hover {
+  color: #ffd700;
+  transform: translateY(-2px);
+}
+
+/* Active nav link styling (highlight selected page) */
+.nav-link.active {
+  color: #ffd700;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* Medium-thick active bar under nav links */
+.nav-link { position: relative; padding-bottom: 8px; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 6px; /* medium thickness */
+  width: 0%;
+  background: #ffd24d; /* same yellow accent used elsewhere */
+  border-radius: 3px;
+  transition: width 220ms cubic-bezier(.2,.9,.3,1);
+}
+.nav-link.active::after { width: 100%; }
+.nav-link:hover::after { width: 100%; opacity: 0.85; }
+
+/* Main Container */
+.main-container {
+  display: flex;
+  min-height: calc(100vh - 100px);
+  padding: 40px 80px 40px; /* top spacing moved to body via --navbar-space */
+  gap: 60px;
+}
+
+/* Left Content */
+.content-left {
+  flex: 1;
+  max-width: 600px;
+}
+
+.main-title {
+  font-size: clamp(40px, 7.5vw, 88px);
+  font-weight: 800;
+  margin-bottom: 18px;
+  color: #ffffff;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: clamp(15px, 1.6vw, 20px);
+  line-height: 1.6;
+  margin-bottom: 36px;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 620px;
+}
+
+/* Confession Form */
+.confession-form {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.confession-input {
+  width: 100%;
+  min-height: 150px;
+  max-height: 300px;
+  padding: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  resize: vertical;
+  margin-bottom: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.confession-input:focus {
+  outline: none;
+  border-color: #ffd700;
+}
+
+.confession-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.send-button {
+  background: #ffd24d;
+  color: #111;
+  border: none;
+  padding: 18px 36px;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms ease;
+  box-shadow: 0 6px 18px rgba(18, 18, 18, 0.12);
+}
+
+.send-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(18, 18, 18, 0.16);
+}
+
+.status-message {
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Right Content */
+.content-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.logo-container {
+  position: relative;
+}
+
+.university-logo {
+  width: 420px;
+  height: 420px;
+  object-fit: contain;
+  border-radius: 0; /* remove circular clipping */
+  overflow: visible;
+  border: none; /* remove circular border */
+  background: transparent; /* remove white circle background */
+  box-shadow: none; /* remove drop shadow that looked like a frame */
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .main-container {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .content-right {
+    padding-top: 20px;
+  }
+  
+  .university-logo {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .nav-links {
+    gap: 20px;
+  }
+  
+  /* Ensure content remains below the fixed navbar on smaller screens */
+  .main-container {
+    padding: 40px 20px 20px; /* reduce since body now provides top spacing */
+  }
+  
+  .main-title {
+    font-size: 36px;
+  }
+  
+  .confession-form {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 28px;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+  }
+  
+  .university-logo {
+    width: 120px;
+    height: 120px;
+  }
+}

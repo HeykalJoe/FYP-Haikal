@@ -1,0 +1,120 @@
+{
+  "nav": {
+    "home": "Laman Utama",
+    "confess": "Luahan",
+    "dashboard": "Papan Pemuka",
+    "admin": "Pentadbir",
+    "about": "Tentang Kami",
+    "brand": "Suara Sintok"
+  },
+  "btn": {
+    "getStarted": "Mula",
+    "send": "Hantar",
+    "confirm": "Sahkan",
+    "displayAll": "Paparkan Semua",
+    "login": "Log Masuk",
+    "showDetails": "Papar Butiran",
+    "sortAsc": "Susun ↑",
+    "sortDesc": "Susun ↓"
+  },
+  "home": {
+    "title": "Selamat Datang UUM!",
+    "subtitle": "Ruang selamat dan tanpa nama untuk pelajar UUM berkongsi cerita, perasaan dan pengalaman mereka."
+  },
+  "confess": {
+    "title": "Ruang Luahan",
+    "placeholder": "Taip luahan anda di sini...",
+    "summaryLabel": "Ringkasan:"
+  },
+  "dashboard": {
+    "title": "Kadar Ketidakpuasan Hati Jabatan",
+    "uumConfessionRate": "Kadar Pengakuan UUM",
+    "wordcloudRange": "Julat kata awan:",
+    "wordcloudTitle": "Awan Kata",
+    "topicDistribution": "Taburan Topik",
+    "sentimentDistribution": "Taburan Sentimen",
+    "enterYear": "Sila masukkan tahun!",
+    "enterYearMonth": "Sila masukkan tahun dan bulan!",
+    "pickWeek": "Sila pilih minggu!",
+    "selectDay": "Sila pilih hari dalam minggu!",
+    "selectDate": "Sila pilih tarikh!",
+    "noWordsFound": "Tiada kata ditemui untuk julat ini.",
+    "loadFailed": "Gagal memuatkan awan kata:",
+    "summaryLabel": "Ringkasan"
+  },
+  
+  "dashboard_range": {
+    "overall": "Keseluruhan",
+    "year": "Tahun",
+    "month": "Bulan",
+    "week": "Minggu",
+    "day": "Hari dalam Minggu",
+    "date": "Tarikh Tertentu"
+  },
+  "admin": {
+    "title": "Papan Pemuka Pentadbir",
+    "subtitle": "Lihat, carian dan urus semua luahan.",
+    "noConfessionsFound": "Tiada luahan ditemui.",
+    "loadConfessionsFailed": "Gagal memuatkan luahan:",
+    "deleteFailed": "Gagal memadam luahan."
+  },
+  "table": {
+    "id": "ID",
+    "sentiment": "Sentimen",
+    "sentimentScore": "Skor Sentimen",
+    "topic": "Topik",
+    "date": "Tarikh",
+    "action": "Tindakan"
+  },
+  "search": {
+    "label": "Carian mengikut:",
+    "all": "Semua (lalai)",
+    "sentiment": "Sentimen",
+    "topic": "Topik",
+    "date": "Tarikh",
+    "searchBtn": "Carian",
+    "displayAll": "Paparkan Semua",
+    "selectSentiment": "-- Pilih sentimen --",
+    "selectSentimentBefore": "Sila pilih sentimen sebelum menyusun."
+  },
+  "confirm": {
+    "delete": "Adakah anda pasti mahu memadam luahan ini?",
+    "copyPrompt": "Adakah anda mahu salinan luahan anda dihantar ke e-mel anda?"
+  },
+  "status": {
+    "confessionSent": "Luahan berjaya dihantar!",
+    "confessionSavedNoEmail": "Luahan disimpan, tetapi gagal menghantar salinan ke e-mel anda."
+  },
+  "modal": {
+    "close": "Tutup",
+    "departmentDetails": "Butiran Jabatan",
+    "showFull": "Papar Penuh"
+  },
+  "prompt": {
+    "enterEmail": "Sila masukkan alamat e-mel anda:"
+  },
+  "toast": {
+    "copySent": "Salinan luahan anda telah dihantar ke e-mel anda.",
+    "pleaseWrite": "Sila tulis sesuatu!",
+    "invalidEmail": "Alamat e-mel tidak sah. Tiada salinan dihantar.",
+    "sendError": "Ralat semasa menghantar luahan. Sila cuba lagi."
+  },
+  "auth": {
+    "loginTitle": "Log Masuk Pentadbir",
+    "passwordPlaceholder": "Masukkan kata laluan pentadbir",
+    "loginBtn": "Log Masuk",
+    "incorrectPassword": "Kata laluan tidak betul."
+  },
+  "confession": {
+    "notFound": "Luahan tidak dijumpai"
+  }
+  ,
+  "about": {
+    "title": "Tentang Suara Sintok",
+    "lead": "Ruang selamat dan tanpa nama untuk pelajar UUM berkongsi cerita, perasaan, dan pengalaman. Kami menghormati privasi dan menyediakan analitik untuk membantu perkhidmatan pelajar memahami sentimen kampus tanpa mendedahkan individu.",
+    "missionTitle": "Misi Kami",
+    "mission": "Untuk menyediakan saluran tanpa nama bagi pelajar meluahkan kebimbangan dan membantu pentadbir mengenal pasti trend untuk tindakan selanjutnya.",
+    "contactTitle": "Hubungi",
+    "contact": "Ini adalah laman demo. Untuk maklum balas atau isu, hubungi penyelenggara projek."
+  }
+}

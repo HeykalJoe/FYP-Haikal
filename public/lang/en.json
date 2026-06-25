@@ -1,0 +1,121 @@
+{
+  "nav": {
+    "home": "Home",
+    "confess": "Confess",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "about": "About Us",
+    "brand": "Sintok's Echoes"
+  },
+  "btn": {
+    "getStarted": "Get Started",
+    "send": "Send",
+    "confirm": "Confirm",
+    "displayAll": "Display All",
+    "login": "Login",
+    "showDetails": "Show Details",
+    "sortAsc": "Sort ↑",
+    "sortDesc": "Sort ↓"
+  },
+  "home": {
+    "title": "Welcome UUMers!",
+    "subtitle": "A safe and anonymous space for UUM students to share their stories, feelings, and experiences."
+  },
+  "confess": {
+    "title": "Confession Space",
+    "placeholder": "Type your confession here...",
+    "summaryLabel": "Summary:"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "uumConfessionRate": "UUM Confession Rate",
+    "wordcloudRange": "Wordcloud range:",
+    "wordcloudTitle": "Word Cloud",
+    "topicDistribution": "Topic Distribution",
+    "sentimentDistribution": "Sentiment Distribution",
+    "enterYear": "Please enter a year!",
+    "enterYearMonth": "Please enter year and month!",
+    "pickWeek": "Please pick a week!",
+    "selectDay": "Please select a day of week!",
+    "selectDate": "Please select a date!",
+    "noWordsFound": "No words found for this range.",
+    "loadFailed": "Failed to load word cloud:",
+    "summaryLabel": "Summary"
+  },
+  "search": {
+    "selectSentimentBefore": "Please select a sentiment before sorting."
+  },
+  "dashboard_range": {
+    "overall": "Overall",
+    "year": "Year",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day of Week",
+    "date": "Specific Date"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "View, search, and manage all confessions.",
+    "noConfessionsFound": "No confessions found.",
+    "loadConfessionsFailed": "Failed to load confessions:",
+    "deleteFailed": "Failed to delete confession."
+  },
+  "table": {
+    "id": "ID",
+    "sentiment": "Sentiment",
+    "sentimentScore": "Sentiment Score",
+    "topic": "Topic",
+    "date": "Date",
+    "action": "Action"
+  },
+  "search": {
+    "label": "Search by:",
+    "all": "All (default)",
+    "sentiment": "Sentiment",
+    "topic": "Topic",
+    "date": "Date",
+    "searchBtn": "Search",
+    "displayAll": "Display All",
+    "selectSentiment": "-- Select sentiment --"
+  },
+  "confirm": {
+    "delete": "Are you sure you want to delete this confession?",
+    "copyPrompt": "Do you want a copy of your confession to be sent to your email?"
+  },
+  "status": {
+    "confessionSent": "Confession sent successfully!",
+    "confessionSavedNoEmail": "Confession saved, but failed to send a copy to your email."
+  },
+  "modal": {
+    "close": "Close",
+    "departmentDetails": "Department Details",
+    "showFull": "Show Full"
+  },
+  "prompt": {
+    "enterEmail": "Please enter your email address:"
+  },
+  "toast": {
+    "copySent": "A copy of your confession was sent to your email.",
+    "pleaseWrite": "Please write something!",
+    "invalidEmail": "Invalid email address. No copy sent.",
+    "sendError": "Error sending confession. Please try again."
+  },
+  "auth": {
+    "loginTitle": "Admin Login",
+    "passwordPlaceholder": "Enter admin password",
+    "loginBtn": "Login",
+    "incorrectPassword": "Incorrect password."
+  },
+  "confession": {
+    "notFound": "Confession not found"
+  }
+  ,
+  "about": {
+    "title": "About Sintok's Echoes",
+    "lead": "A safe and anonymous space for UUM students to share their stories, feelings, and experiences. We respect privacy and provide analytics to help student services understand campus sentiment without exposing individuals.",
+    "missionTitle": "Our Mission",
+    "mission": "To provide an anonymous outlet for students to express concerns and for administrators to spot trends and take action while preserving privacy.",
+    "contactTitle": "Contact",
+    "contact": "This is a demo site. For feedback or issues, contact the project maintainer."
+  }
+}

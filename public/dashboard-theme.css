@@ -1,0 +1,185 @@
+/* Modern / Futuristic dashboard theme overrides (applies only to dashboard.html) */
+:root{
+  --bg-overlay: rgba(6,10,20,0.66);
+  --panel-bg: rgba(10,14,26,0.6);
+  --panel-border: rgba(80,200,220,0.08);
+  --accent: #4ecdc4; /* cyan */
+  --accent-2: #ff6bcb; /* pink */
+  --accent-3: #ffd24d; /* yellow */
+  --muted: rgba(255,255,255,0.62);
+}
+
+/* High-contrast text overrides for dashboard panels */
+.admin-container,
+.admin-container .analytics-panel,
+.admin-container .analytics-panel *,
+.admin-container h1,
+.admin-container h2,
+.admin-container h3,
+.admin-container p,
+.admin-container label,
+.admin-container td,
+.admin-container th,
+.admin-container a,
+.admin-container .nav-link,
+.admin-container button,
+.admin-container select,
+.admin-container input,
+.admin-container textarea {
+  color: #e6f7f6 !important;
+}
+
+.admin-table th, .admin-table td {
+  background: transparent !important;
+  color: #e6f7f6 !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+::placeholder { color: rgba(230,247,246,0.55) !important; }
+
+/* Make links within panels more visible */
+.admin-container a { color: var(--accent) !important; text-decoration: underline; }
+
+
+/* Apply a dark translucent backdrop on the dashboard area to increase contrast over bg image */
+.admin-container {
+  background: linear-gradient(180deg, rgba(9,12,20,0.55), rgba(6,8,16,0.6));
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 10px 40px rgba(2,6,20,0.6), 0 0 40px rgba(78,205,196,0.04) inset;
+  color: #000 !important;
+}
+
+.admin-title { color: #ffffff; font-weight:800; letter-spacing:0.02em; }
+
+/* Analytics panels: glassy cards with neon accent outlines */
+.analytics-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 12px;
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 4px 20px rgba(2,6,20,0.6);
+}
+.analytics-panel h3 {
+  color: #ffffff; /* strong white for clear readability */
+  margin-bottom: 12px;
+  font-weight: 700;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.65);
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.18);
+}
+
+/* Headings for visualizations that should use dark text (over lighter panel backgrounds)
+   Apply this class to h3 elements for Topic, Sentiment, UUM and Department panels.
+   Note: Word Cloud heading intentionally left unchanged. */
+.analytics-panel .visual-heading-dark {
+  color: #071018 !important; /* very dark text */
+  background: rgba(255,255,255,0.06) !important; /* subtle light pill behind text */
+  text-shadow: none !important;
+  font-weight: 700 !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  display: inline-block !important;
+}
+
+/* Chart canvases: subtle inner glow and rounded corners */
+.analytics-panel canvas {
+  background: transparent !important;
+  display:block;
+  width:100% !important;
+  height:300px !important;
+  border-radius:8px;
+}
+
+/* Tables and small cards (UUM rate panels) */
+/* Tables and small cards (UUM rate panels) */
+#uum-satisfaction-table table, #department-satisfaction-table table { background: transparent; color:#000 !important; }
+#uum-satisfaction-table td, #department-satisfaction-table td, #uum-satisfaction-table th, #department-satisfaction-table th { color:#000 !important; }
+#uum-satisfaction-table td a, #department-satisfaction-table td a { color: #000 !important; }
+#uum-satisfaction-note, #department-satisfaction-note { color: #111 !important; }
+
+/* Ensure small summary numbers and labels within these panels remain dark */
+#uum-count-positive, #uum-count-negative, #uum-count-total,
+#uum-pct-positive, #uum-pct-negative, #uum-pct-total,
+#department-count-hea, #department-count-hep, #department-count-total,
+#department-pct-hea, #department-pct-hep, #department-pct-total {
+  color: #000 !important;
+}
+
+/* Buttons: neon outlines */
+.send-button {
+  background: linear-gradient(90deg, rgba(78,205,196,0.14), rgba(255,107,203,0.06));
+  color: #000;
+  border: 1px solid rgba(78,205,196,0.18);
+  box-shadow: 0 6px 18px rgba(78,205,196,0.06);
+}
+.send-button:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(78,205,196,0.09); }
+
+/* Inputs styling to match theme */
+select, input[type="number"], input[type="date"], input[type="week"] {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: #000;
+  padding: 8px 10px;
+  border-radius:6px;
+}
+
+/* Word cloud canvas background overturned to dark */
+#wordcloud-canvas { background: transparent !important; }
+
+/* Improve nav appearance for dashboard */
+.navbar { background: linear-gradient(180deg, rgba(1,2,6,0.35), rgba(1,2,6,0.15)); border-bottom:1px solid rgba(255,255,255,0.02); }
+.nav-brand { color: #ffffff; }
+.nav-link { color: rgb(255, 255, 255); }
+.nav-link.active { color: var(--accent-3); font-weight:700; }
+
+/* Remove the bold active/hover accent bar under nav links for a cleaner navbar */
+.nav-links { position: relative; }
+.nav-link { display: inline-block; position: relative; padding-bottom: 8px; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 6px;
+  width: 0%;
+  background: var(--accent-3);
+  border-radius: 3px;
+  transition: width 220ms cubic-bezier(.2,.9,.3,1);
+}
+.nav-link.active::after, .nav-link:hover::after { width: 100%; }
+
+/* Make summary textarea dark and match theme — increase contrast for readability */
+#analytics-summary {
+  background: rgba(0,0,0,0.55); /* darker backdrop so underlying image doesn't bleed through */
+  color: #ffffff; /* clear, high-contrast text */
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 12px !important;
+  line-height: 1.45;
+  font-size: 14px;
+  border-radius: 8px;
+  resize: vertical;
+}
+
+/* Small responsive tweaks */
+@media (max-width: 1024px) {
+  .analytics-panel canvas { height:220px !important; }
+}
+
+/* Soft neon accent strips for headings */
+.analytics-panel::before {
+  content: '';
+  display:block;
+  height:3px;
+  width:40px;
+  border-radius:2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  margin-bottom:12px;
+}
+
+/* Make chart legends and labels more visible */
+.chart-legend, .chartjs-legend, .chartjs-render-monitor { color: #000 }
+
+/* Small helper to highlight key numbers */
+strong, b { color: #fff; }

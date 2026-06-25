@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="admin.title">Admin Dashboard - Sintok's Echoes</title>
+  <link rel="stylesheet" href="style.css?v=20251116">
+  <style>
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 24px;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .admin-table th, .admin-table td {
+      padding: 12px 8px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
+    }
+    .admin-table th {
+      background: #f7f7f7;
+    }
+    .admin-table tr:last-child td {
+      border-bottom: none;
+    }
+    .delete-btn {
+      background: #ff6b6b;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background: #e63946;
+    }
+    /* Show button appearance: match delete button shape/size but keep its color (inherited from send-button) */
+    .show-confession-btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      margin-right: 6px;
+      display: inline-block;
+      line-height: 1;
+    }
+    .search-bar {
+      margin-top: 24px;
+      margin-bottom: 8px;
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .admin-container {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 32px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .admin-title {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+    .admin-subtitle {
+      color: #666;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body class="page-preload">
+  <nav class="navbar">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button id="back-btn" class="back-btn" title="Back">←</button>
+      <div style="display:flex;flex-direction:column;">
+        <div class="nav-brand"><img src="logo2.png" alt="Sintok's Echoes" class="site-logo"></div>
+        <div id="lang-toggle" style="font-size:13px;margin-top:4px;cursor:pointer;">Bahasa Melayu / English</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link" data-page="index" data-i18n="nav.home">Home</a>
+      <a href="index.html#confess" class="nav-link" data-page="confess" data-i18n="nav.confess">Confess</a>
+      <a href="dashboard.html" class="nav-link" data-page="dashboard" data-i18n="nav.dashboard">Dashboard</a>
+      <a href="admin.html" class="nav-link" data-page="admin" data-i18n="nav.admin">Admin</a>
+      <a href="about.html" class="nav-link" data-page="about" data-i18n="nav.about">About Us</a>
+      
+    </div>
+  </nav>
+  <h1 class="admin-title" data-i18n="admin.title" style="text-align:center;margin-top:32px;">Admin Dashboard</h1>
+  <script src="i18n.js"></script>
+  <div class="admin-container" id="admin-content" style="display:none;">
+    <div style="margin-bottom:20px;">
+      <label for="wc-range" data-i18n="dashboard.wordcloudRange">Wordcloud range: </label>
+      <select id="wc-range">
+        <option value="overall" data-i18n="dashboard_range.overall">Overall</option>
+        <option value="year" data-i18n="dashboard_range.year">Year</option>
+        <option value="month" data-i18n="dashboard_range.month">Month</option>
+        <option value="day" data-i18n="dashboard_range.day">Day of Week</option>
+        <option value="date" data-i18n="dashboard_range.date">Specific Date</option>
+      </select>
+      <input type="number" id="wc-year" placeholder="Year" style="display:none;width:90px;">
+      <input type="number" id="wc-month" placeholder="Month (1-12)" min="1" max="12" style="display:none;width:90px;">
+  <input type="week" id="wc-week" style="display:none;width:160px;">
+      <select id="wc-day" style="display:none;width:120px;">
+        <option value="1">Sunday</option>
+        <option value="2">Monday</option>
+        <option value="3">Tuesday</option>
+        <option value="4">Wednesday</option>
+        <option value="5">Thursday</option>
+        <option value="6">Friday</option>
+        <option value="7">Saturday</option>
+      </select>
+      <input type="date" id="wc-date" style="display:none;">
+  <button id="wordcloud-btn" class="send-button" data-i18n="btn.confirm" style="padding:8px 18px;font-size:15px;background:#4ecdc4;color:#222;">Confirm</button>
+    </div>
+    <div class="analytics-row" style="display:flex;gap:16px;align-items:flex-start;margin-bottom:24px;">
+      <div class="analytics-panel" style="flex:1;border:1px solid #e0e0e0;border-radius:8px;padding:12px;background:#fff;">
+        <h3 style="margin:6px 0 8px;padding:0;font-size:1rem;" data-i18n="dashboard.wordcloudTitle">Word Cloud</h3>
+        <canvas id="wordcloud-canvas" width="380" height="300" style="display:none;width:100%;height:300px;"></canvas>
+      </div>
+      <div class="analytics-panel" style="flex:1;border:1px solid #e0e0e0;border-radius:8px;padding:12px;background:#fff;">
+        <h3 style="margin:6px 0 8px;padding:0;font-size:1rem;" data-i18n="dashboard.topicDistribution">Topic Distribution</h3>
+        <canvas id="topic-chart" width="380" height="300" style="display:none;width:100%;height:300px;"></canvas>
+      </div>
+      <div class="analytics-panel" style="flex:1;border:1px solid #e0e0e0;border-radius:8px;padding:12px;background:#fff;">
+        <h3 style="margin:6px 0 8px;padding:0;font-size:1rem;" data-i18n="dashboard.sentimentDistribution">Sentiment Distribution</h3>
+        <canvas id="sentiment-chart" width="380" height="300" style="display:none;width:100%;height:300px;"></canvas>
+      </div>
+    </div>
+    <div style="margin-top:12px;margin-bottom:20px;">
+      <label for="analytics-summary" style="display:block;font-weight:600;margin-bottom:6px;color:#222;" data-i18n="dashboard.summaryLabel">Summary</label>
+      <textarea id="analytics-summary" rows="4" style="width:100%;max-width:1100px;border-radius:8px;border:1px solid #ccc;padding:10px;resize:vertical;" placeholder="Write or paste a summary of the analytics here..."></textarea>
+    </div>
+    <div style="margin-top:12px;margin-bottom:18px;display:flex;align-items:flex-start;gap:16px;">
+      <div style="flex:0 0 360px;border:1px solid #e0e0e0;border-radius:8px;padding:12px;background:#fff;">
+    <h3 style="margin:6px 0 8px;padding:0;font-size:1rem;" data-i18n="dashboard.uumConfessionRate">UUM Confession Rate</h3>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <canvas id="uum-satisfaction-chart" width="280" height="200" style="width:280px;height:200px;display:block;box-sizing:border-box;margin:0;padding:0;"></canvas>
+          <!-- Percentage table placed to the right of the chart -->
+          <div id="uum-satisfaction-table" style="min-width:180px;">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;background:#fff;">
+              <thead>
+                <tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #eaeaea;">Category</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #eaeaea;">Count</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #eaeaea;">%</th></tr>
+              </thead>
+              <tbody>
+                <tr id="uum-row-positive"><td style="padding:6px 8px;color:#000;">Satisfied</td><td id="uum-count-positive" style="padding:6px 8px;text-align:right;color:#000;">—</td><td id="uum-pct-positive" style="padding:6px 8px;text-align:right;color:#000;">—</td></tr>
+                <tr id="uum-row-negative"><td style="padding:6px 8px;color:#000;">Dissatisfied</td><td id="uum-count-negative" style="padding:6px 8px;text-align:right;color:#000;">—</td><td id="uum-pct-negative" style="padding:6px 8px;text-align:right;color:#000;">—</td></tr>
+                  <tr style="border-top:1px solid #eaeaea;font-weight:700;"><td style="padding:6px 8px;color:#000;">Total (confessions)</td><td id="uum-count-total" style="padding:6px 8px;text-align:right;color:#000;">—</td><td id="uum-pct-total" style="padding:6px 8px;text-align:right;color:#000;">—</td></tr>
+                </tbody>
+              </table>
+              <div id="uum-satisfaction-note" style="font-size:12px;color:#666;margin-top:8px;">Showing satisfied (positive + neutral) & dissatisfied confessions as a percentage of confessions considered.</div>
+          </div>
+        </div>
+      </div>
+  <!-- Department panel; redesigned to match UUM Confession Rate layout (donut left, table right) -->
+      <div style="flex:0 0 360px;border:1px solid #e0e0e0;border-radius:8px;padding:12px;background:#fff;min-height:160px;">
+        <h3 id="department-title" style="margin:6px 0 8px;padding:0;font-size:1rem;" data-i18n="dashboard.title">Department Dissatisfaction Rate</h3>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <canvas id="department-dissatisfaction-chart" width="280" height="200" style="width:280px;height:200px;display:block;box-sizing:border-box;margin:0;padding:0;"></canvas>
+          <div id="department-satisfaction-table" style="min-width:180px;">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;background:#fff;">
+              <thead>
+                <tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid #eaeaea;">Department</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #eaeaea;">Count</th><th style="text-align:right;padding:6px 8px;border-bottom:1px solid #eaeaea;">%</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="padding:6px 8px;color:#000;">Hal Ehwal Akademik (HEA)</td><td id="department-count-hea" style="padding:6px 8px;text-align:right;color:#000;">—</td><td id="department-pct-hea" style="padding:6px 8px;text-align:right;color:#000;">—</td></tr>
+                <tr><td style="padding:6px 8px;color:#000;">Hal Ehwal Pelajar (HEP)</td><td id="department-count-hep" style="padding:6px 8px;text-align:right;color:#000;">—</td><td id="department-pct-hep" style="padding:6px 8px;text-align:right;color:#000;">—</td></tr>
+                <tr style="border-top:1px solid #eaeaea;font-weight:700;"><td style="padding:6px 8px;color:#000;">Total negative (both)</td><td id="department-count-total" style="padding:6px 8px;text-align:right;color:#000;">—</td><td id="department-pct-total" style="padding:6px 8px;text-align:right;color:#000;">—</td></tr>
+              </tbody>
+            </table>
+            <div id="department-satisfaction-note" style="font-size:12px;color:#666;margin-top:8px;">Dissatisfied confessions per department shown as percentage of that department's negative submissions.</div>
+          </div>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px;">
+          <button id="show-dept-details-btn" class="send-button" data-i18n="btn.showDetails" style="padding:6px 10px;font-size:13px;background:#2a9d8f;color:#fff;">Show Details</button>
+        </div>
+      </div>
+    </div>
+    <div class="admin-subtitle" data-i18n="admin.subtitle">View, search, and manage all confessions.</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <label for="search-mode" style="font-weight:600;" data-i18n="search.label">Search by:</label>
+      <select id="search-mode" style="padding:8px;border-radius:6px;border:1px solid #ccc;font-size:15px;">
+        <option value="all" data-i18n="search.all">All (default)</option>
+        <option value="sentiment" data-i18n="search.sentiment">Sentiment</option>
+        <option value="topic" data-i18n="search.topic">Topic</option>
+        <option value="date" data-i18n="search.date">Date</option>
+      </select>
+      <select id="search-sentiment" style="display:none;padding:8px;border-radius:6px;border:1px solid #ccc;font-size:15px;">
+        <option value="" data-i18n="search.selectSentiment">-- Select sentiment --</option>
+        <option value="positive">Positive</option>
+        <option value="neutral">Neutral</option>
+        <option value="negative">Negative</option>
+      </select>
+      <div id="sentiment-sort-controls" style="display:none;margin-left:8px;">
+        <button id="sort-sent-asc" class="send-button" data-i18n="btn.sortAsc" style="padding:6px 8px;font-size:13px;margin-right:6px;">Sort ↑</button>
+        <button id="sort-sent-desc" class="send-button" data-i18n="btn.sortDesc" style="padding:6px 8px;font-size:13px;">Sort ↓</button>
+      </div>
+      <input type="text" id="search-topic" style="display:none;padding:8px;border-radius:6px;border:1px solid #ccc;font-size:15px;" placeholder="Enter topic (e.g. academic)">
+      <input type="date" id="search-date" style="display:none;padding:8px;border-radius:6px;border:1px solid #ccc;font-size:15px;">
+      <button id="search-btn" class="send-button" data-i18n="search.searchBtn" style="padding:10px 20px;font-size:16px;">Search</button>
+      <button id="display-all-btn" class="send-button" data-i18n="search.displayAll" style="padding:10px 20px;font-size:16px;background:#4ecdc4;color:#222;">Display All</button>
+    </div>
+    <table class="admin-table" id="confessions-table">
+      <thead>
+        <tr>
+          <th data-i18n="table.id">ID</th>
+          <th data-i18n="table.sentiment">Sentiment</th>
+          <th data-i18n="table.sentimentScore">Sentiment Score</th>
+          <th data-i18n="table.topic">Topic</th>
+          <th data-i18n="table.date">Date</th>
+          <th data-i18n="table.action">Action</th>
+        </tr>
+      </thead>
+      <tbody id="confessions-body">
+        <!-- Confessions will be loaded here -->
+      </tbody>
+    </table>
+  </div>
+  <div class="admin-container" id="auth-container">
+  <h2 style="margin-bottom:12px; color:#000000;" data-i18n="auth.loginTitle">Admin Login</h2>
+    <input type="password" id="admin-password" data-i18n="auth.passwordPlaceholder" placeholder="Enter admin password" style="padding:10px;width:250px;border-radius:6px;border:1px solid #ccc;font-size:16px;">
+    <button id="login-btn" class="send-button" data-i18n="auth.loginBtn" style="margin-left:8px;">Login</button>
+    <div id="auth-status" style="color:#ffffff;margin-top:10px;"></div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.2/wordcloud2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Helper: get sentiment distribution API URL
+    function getSentimentDistUrl() {
+      if (wcRange.value === 'overall') {
+        return '/api/sentimentdist/overall';
+      } else if (wcRange.value === 'year') {
+        const year = wcYear.value;
+        if (!year) return null;
+        return `/api/sentimentdist/year/${year}`;
+      } else if (wcRange.value === 'month') {
+        const year = wcYear.value;
+        const month = wcMonth.value;
+        if (!year || !month) return null;
+        return `/api/sentimentdist/month/${year}/${month}`;
+      } else if (wcRange.value === 'week') {
+        const week = wcWeek.value; // format: YYYY-Www
+        if (!week) return null;
+        const parts = week.split('-W');
+        if (parts.length !== 2) return null;
+        return `/api/sentimentdist/week/${parts[0]}/${parts[1]}`;
+      } else if (wcRange.value === 'day') {
+        const day = wcDay.value;
+        if (!day) return null;
+        return `/api/sentimentdist/day/${day}`;
+      } else if (wcRange.value === 'date') {
+        const date = wcDate.value;
+        if (!date) return null;
+        return `/api/sentimentdist?date=${date}`;
+      }
+      return null;
+    }
+
+  // Safe HTML escaping helper to avoid XSS and ensure escapeHtml is defined
+  function escapeHtml(unsafe) {
+    if (unsafe == null) return '';
+    const s = String(unsafe);
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Draw sentiment chart
+  let sentimentChart = null;
+  // returns { labels, counts }
+  async function drawSentimentChart() {
+      const url = getSentimentDistUrl();
+      const chartCanvas = document.getElementById('sentiment-chart');
+      if (!url) {
+        chartCanvas.style.display = 'none';
+        return { labels: [], counts: [] };
+      }
+      try {
+        const res = await fetch(url);
+        const contentType = res.headers.get('content-type') || '';
+        if (!res.ok || !contentType.includes('application/json')) {
+          chartCanvas.style.display = 'none';
+          return { labels: [], counts: [] };
+        }
+        const data = await res.json();
+        if (!data.sentiments || data.sentiments.length === 0) {
+          chartCanvas.style.display = 'none';
+          return { labels: [], counts: [] };
+        }
+        chartCanvas.style.display = '';
+        const labels = data.sentiments.map(s => s.sentiment || 'Unknown');
+        const counts = data.sentiments.map(s => s.count);
+        const colors = ['#4ecdc4', '#e63946', '#f7b801', '#3a86ff', '#8338ec', '#22223b'];
+  if (sentimentChart) sentimentChart.destroy();
+  sentimentChart = new Chart(chartCanvas, {
+          type: 'pie',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Sentiment Distribution',
+              data: counts,
+              backgroundColor: colors,
+              borderColor: '#fff',
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: false,
+            plugins: {
+              legend: { display: true, position: 'right' },
+              title: { display: false }
+            }
+          }
+        });
+        return { labels, counts };
+      } catch (err) {
+        chartCanvas.style.display = 'none';
+        return { labels: [], counts: [] };
+      }
+    }
+    // Helper: get topic distribution API URL
+    function getTopicDistUrl() {
+      if (wcRange.value === 'overall') {
+        return '/api/topicdist/overall';
+      } else if (wcRange.value === 'year') {
+        const year = wcYear.value;
+        if (!year) return null;
+        return `/api/topicdist/year/${year}`;
+      } else if (wcRange.value === 'month') {
+        const year = wcYear.value;
+        const month = wcMonth.value;
+        if (!year || !month) return null;
+        return `/api/topicdist/month/${year}/${month}`;
+      } else if (wcRange.value === 'week') {
+        const week = wcWeek.value;
+        if (!week) return null;
+        const parts = week.split('-W');
+        if (parts.length !== 2) return null;
+        return `/api/topicdist/week/${parts[0]}/${parts[1]}`;
+      } else if (wcRange.value === 'day') {
+        const day = wcDay.value;
+        if (!day) return null;
+        return `/api/topicdist/day/${day}`;
+      } else if (wcRange.value === 'date') {
+        const date = wcDate.value;
+        if (!date) return null;
+        return `/api/topicdist?date=${date}`;
+      }
+      return null;
+    }
+
+  // Draw topic chart
+  let topicChart = null;
+  // returns { labels, counts }
+  async function drawTopicChart() {
+      const url = getTopicDistUrl();
+      const chartCanvas = document.getElementById('topic-chart');
+      if (!url) {
+        chartCanvas.style.display = 'none';
+        return { labels: [], counts: [] };
+      }
+      try {
+        const res = await fetch(url);
+        const contentType = res.headers.get('content-type') || '';
+        if (!res.ok || !contentType.includes('application/json')) {
+          chartCanvas.style.display = 'none';
+          return { labels: [], counts: [] };
+        }
+        const data = await res.json();
+        if (!data.topics || data.topics.length === 0) {
+          chartCanvas.style.display = 'none';
+          return { labels: [], counts: [] };
+        }
+        chartCanvas.style.display = '';
+        const labels = data.topics.map(t => t.topic || 'Unknown');
+        const counts = data.topics.map(t => t.count);
+  if (topicChart) topicChart.destroy();
+  topicChart = new Chart(chartCanvas, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Confession Count',
+              data: counts,
+              backgroundColor: '#4ecdc4',
+              borderColor: '#22223b',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: false,
+            plugins: {
+              legend: { display: false },
+              title: { display: false }
+            },
+            scales: {
+              x: { title: { display: true, text: 'Topic' } },
+              y: { title: { display: true, text: 'Count' }, beginAtZero: true }
+            }
+          }
+        });
+        return { labels, counts };
+      } catch (err) {
+        chartCanvas.style.display = 'none';
+        return { labels: [], counts: [] };
+      }
+    }
+
+    // Wordcloud logic with range selection
+  const wcRange = document.getElementById('wc-range');
+    const wcYear = document.getElementById('wc-year');
+    const wcMonth = document.getElementById('wc-month');
+  const wcWeek = document.getElementById('wc-week');
+    const wcDay = document.getElementById('wc-day');
+    const wcDate = document.getElementById('wc-date');
+    wcRange.addEventListener('change', function() {
+      wcYear.style.display = 'none';
+      wcMonth.style.display = 'none';
+      wcDay.style.display = 'none';
+      wcDate.style.display = 'none';
+      if (this.value === 'year') wcYear.style.display = '';
+      if (this.value === 'month') { wcYear.style.display = ''; wcMonth.style.display = ''; }
+      if (this.value === 'week') wcWeek.style.display = '';
+      if (this.value === 'day') wcDay.style.display = '';
+      if (this.value === 'date') wcDate.style.display = '';
+    });
+
+    document.getElementById('wordcloud-btn').addEventListener('click', async function() {
+  const topicData = await drawTopicChart();
+  const sentimentData = await drawSentimentChart();
+  // generate a client-side summary (no DB save) using the freshly loaded chart data once available
+  try {
+    // word list will be filled later when the wordfreq request returns; we call generateClientSummary from there too
+    // here we provide current topic and sentiment placeholders
+    generateClientSummary(topicData || {labels:[],counts:[]}, sentimentData || {labels:[],counts:[]}, []);
+  } catch (e) { /* ignore */ }
+      let url = '';
+      if (wcRange.value === 'overall') {
+        url = '/api/wordfreq/overall';
+      } else if (wcRange.value === 'year') {
+        const year = wcYear.value;
+        if (!year) return alert((window.__i18n && window.__i18n.t) ? window.__i18n.t('dashboard.enterYear','Please enter a year!') : 'Please enter a year!');
+        url = `/api/wordfreq/year/${year}`;
+      } else if (wcRange.value === 'month') {
+        const year = wcYear.value;
+        const month = wcMonth.value;
+        if (!year || !month) return alert((window.__i18n && window.__i18n.t) ? window.__i18n.t('dashboard.enterYearMonth','Please enter year and month!') : 'Please enter year and month!');
+        url = `/api/wordfreq/month/${year}/${month}`;
+      } else if (wcRange.value === 'week') {
+        const week = wcWeek.value; // YYYY-Www
+        if (!week) return alert((window.__i18n && window.__i18n.t) ? window.__i18n.t('dashboard.pickWeek','Please pick a week!') : 'Please pick a week!');
+        const parts = week.split('-W');
+        if (parts.length !== 2) return alert('Invalid week format');
+        url = `/api/wordfreq/week/${parts[0]}/${parts[1]}`;
+      } else if (wcRange.value === 'day') {
+        const day = wcDay.value;
+        if (!day) return alert((window.__i18n && window.__i18n.t) ? window.__i18n.t('dashboard.selectDay','Please select a day of week!') : 'Please select a day of week!');
+        url = `/api/wordfreq/day/${day}`;
+      } else if (wcRange.value === 'date') {
+        const date = wcDate.value;
+        if (!date) return alert((window.__i18n && window.__i18n.t) ? window.__i18n.t('dashboard.selectDate','Please select a date!') : 'Please select a date!');
+        url = `/api/wordfreq?date=${date}`;
+      }
+      try {
+        const res = await fetch(url);
+        const contentType = res.headers.get('content-type') || '';
+        if (!res.ok) {
+          let errorMsg = `Server error: ${res.status}`;
+          if (contentType.includes('text/html')) {
+            errorMsg += ' (HTML error page received)';
+          } else if (contentType.includes('application/json')) {
+            const errJson = await res.json();
+            errorMsg += `: ${errJson.error || JSON.stringify(errJson)}`;
+          }
+          throw new Error(errorMsg);
+        }
+        if (!contentType.includes('application/json')) {
+          throw new Error('Unexpected response format (not JSON).');
+        }
+  const data = await res.json();
+        const canvas = document.getElementById('wordcloud-canvas');
+        if (data.list && data.list.length > 0) {
+          canvas.style.display = '';
+          if (!canvas.width) canvas.width = 600;
+          if (!canvas.height) canvas.height = 350;
+          setTimeout(() => {
+            WordCloud(canvas, {
+              list: data.list,
+              gridSize: 8,
+              weightFactor: function (size) { return Math.max(18, Math.min(size * 2, 60)); },
+              fontFamily: 'Arial, Helvetica, sans-serif',
+              color: function() {
+                const palette = ['#22223b', '#4ecdc4', '#e63946', '#f7b801', '#3a86ff', '#ffbe0b', '#8338ec'];
+                return palette[Math.floor(Math.random() * palette.length)];
+              },
+              backgroundColor: '#fff',
+              rotateRatio: 0.1,
+              minRotation: 0,
+              maxRotation: 0,
+              drawOutOfBound: false,
+              shuffle: true,
+              ellipticity: 0.7,
+              fontWeight: 'bold',
+              hover: window.drawTooltip || null,
+              click: null
+            });
+          }, 50);
+          // generate client-side summary using topicData, sentimentData, and word list
+          try {
+            generateClientSummary(topicData, sentimentData, data.list);
+          } catch (e) { /* ignore */ }
+        } else {
+          canvas.style.display = 'none';
+          alert((window.__i18n && window.__i18n.t) ? window.__i18n.t('dashboard.noWordsFound','No words found for this range.') : 'No words found for this range.');
+        }
+      } catch (err) {
+        alert(((window.__i18n && window.__i18n.t) ? window.__i18n.t('dashboard.loadFailed','Failed to load word cloud:') : 'Failed to load word cloud:') + ' ' + err.message);
+        const canvas = document.getElementById('wordcloud-canvas');
+        if (canvas) canvas.style.display = 'none';
+      }
+    });
+    
+    const ADMIN_PASSWORD = '55555'; // Change this to your desired admin password
+    const adminContent = document.getElementById('admin-content');
+    const authContainer = document.getElementById('auth-container');
+    const authStatus = document.getElementById('auth-status');
+    document.getElementById('login-btn').onclick = function() {
+      const pw = document.getElementById('admin-password').value;
+      if (pw === ADMIN_PASSWORD) {
+        authContainer.style.display = 'none';
+        adminContent.style.display = '';
+        // Load confessions and auto-render overall analytics
+        loadConfessions();
+        // set range to overall and hide extra inputs
+        wcRange.value = 'overall';
+        wcYear.style.display = 'none'; wcMonth.style.display = 'none'; wcDay.style.display = 'none'; wcDate.style.display = 'none';
+        // Auto-run overall analytics
+        (async () => {
+          try {
+            // draw wordcloud overall
+            const wcRes = await fetch('/api/wordfreq/overall');
+            if (wcRes.ok) {
+              const wcData = await wcRes.json();
+              const canvas = document.getElementById('wordcloud-canvas');
+              if (wcData.list && wcData.list.length > 0) {
+                canvas.style.display = '';
+                if (!canvas.width) canvas.width = 600;
+                if (!canvas.height) canvas.height = 350;
+                setTimeout(() => {
+                  WordCloud(canvas, {
+                    list: wcData.list,
+                    gridSize: 8,
+                    weightFactor: function (size) { return Math.max(18, Math.min(size * 2, 60)); },
+                    fontFamily: 'Arial, Helvetica, sans-serif',
+                    color: function() { const palette = ['#22223b', '#4ecdc4', '#e63946', '#f7b801', '#3a86ff', '#ffbe0b', '#8338ec']; return palette[Math.floor(Math.random() * palette.length)]; },
+                    backgroundColor: '#fff',
+                    rotateRatio: 0.1,
+                    minRotation: 0,
+                    maxRotation: 0,
+                    drawOutOfBound: false,
+                    shuffle: true,
+                    ellipticity: 0.7,
+                    fontWeight: 'bold',
+                    hover: window.drawTooltip || null,
+                    click: null
+                  });
+                }, 50);
+              } else {
+                canvas.style.display = 'none';
+              }
+            }
+          } catch (e) { /* ignore */ }
+          // draw topic and sentiment charts overall and generate client summary
+          const t = await drawTopicChart();
+          const s = await drawSentimentChart();
+          try { generateClientSummary(t, s, []); } catch(e){ }
+        })();
+      } else {
+        authStatus.textContent = 'Incorrect password.';
+      }
+    };
+
+    async function fetchConfessions(query = "") {
+      try {
+        // Build query string from provided query object or raw q
+        let url = '/admin/confessions';
+        if (typeof query === 'string' && query.trim()) {
+          url += `?q=${encodeURIComponent(query)}`;
+        } else if (typeof query === 'object' && query !== null) {
+          const params = new URLSearchParams();
+          if (query.q) params.set('q', query.q);
+          if (query.sentiment) params.set('sentiment', query.sentiment);
+          if (query.topic) params.set('topic', query.topic);
+          if (query.date) params.set('date', query.date);
+          if (query.sort) params.set('sort', query.sort);
+          const qs = params.toString();
+          if (qs) url += `?${qs}`;
+        }
+        const res = await fetch(url);
+        if (!res.ok) {
+          const text = await res.text();
+          console.error('Server error:', res.status, text);
+          alert('Failed to load confessions: ' + res.status);
+          return [];
+        }
+        const data = await res.json();
+        return data;
+      } catch (err) {
+        alert('Error loading confessions. The server may be down or returned invalid data.');
+        console.error('Fetch error:', err);
+        return [];
+      }
+    }
+
+    function renderConfessions(confessions) {
+      const tbody = document.getElementById('confessions-body');
+      tbody.innerHTML = "";
+      if (confessions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#000;">No confessions found.</td></tr>';
+        return;
+      }
+      confessions.forEach(conf => {
+        const tr = document.createElement('tr');
+          // Determine sentiment color: positive -> green, neutral -> yellow, negative -> red
+          const rawSent = conf.sentiment || '';
+          const sentLower = (rawSent + '').toString().toLowerCase();
+          let sentColor = '#000';
+          if (sentLower.includes('pos') || sentLower.includes('positive')) sentColor = '#2a9d8f';
+          else if (sentLower.includes('neg') || sentLower.includes('negative')) sentColor = '#e63946';
+          else if (sentLower.includes('neut') || sentLower.includes('neutral')) sentColor = '#ffd24d';
+
+          tr.innerHTML = `
+            <td style="color:#000;">${escapeHtml(conf.id)}</td>
+            <td style="color:${sentColor};font-weight:700;">${escapeHtml(conf.sentiment || '')}</td>
+            <td style="color:#000;">${conf.sentimentScore !== undefined && conf.sentimentScore !== null ? escapeHtml(conf.sentimentScore) : ''}</td>
+            <td style="color:#000;">${escapeHtml(conf.topic || '')}</td>
+            <td style="color:#000;">${conf.created_at ? new Date(conf.created_at).toLocaleString() : ''}</td>
+            <td>
+              <button class="send-button show-confession-btn" data-id="${conf.id}" style="padding:6px 8px;margin-right:6px;">Show</button>
+              <button class="delete-btn" onclick="deleteConfession(${conf.id})" title="Delete confession" aria-label="Delete confession">🗑️</button>
+            </td>
+          `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function loadConfessions() {
+      // Build query based on selected search mode and inputs
+      const modeEl = document.getElementById('search-mode');
+      const mode = modeEl ? modeEl.value : 'all';
+      let query = '';
+      if (mode === 'all') {
+        query = '';
+      } else if (mode === 'sentiment') {
+        const s = (document.getElementById('search-sentiment') || {}).value || '';
+        query = { sentiment: s, sort: sentimentSort };
+      } else if (mode === 'topic') {
+        const t = (document.getElementById('search-topic') || {}).value || '';
+        query = { topic: t };
+      } else if (mode === 'date') {
+        const d = (document.getElementById('search-date') || {}).value || '';
+        query = { date: d };
+      }
+
+      const confessions = await fetchConfessions(query);
+      window.allConfessions = confessions || [];
+      renderConfessions(confessions);
+    }
+
+    async function deleteConfession(id) {
+      if (!confirm('Are you sure you want to delete this confession?')) return;
+      const res = await fetch(`/admin/confessions/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        loadConfessions();
+      } else {
+        alert('Failed to delete confession.');
+      }
+    }
+
+    // Show confession details by id (uses window.allConfessions populated by loadConfessions)
+    function showConfessionById(id) {
+      if (!window.allConfessions || !Array.isArray(window.allConfessions)) return;
+      const c = window.allConfessions.find(x => String(x.id) === String(id));
+      if (!c) { alert('Confession not found'); return; }
+      // Create a modal-like panel if not exists
+      let modal = document.getElementById('confession-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'confession-modal';
+        modal.style.position = 'fixed';
+        modal.style.left = '50%';
+        modal.style.top = '50%';
+        modal.style.transform = 'translate(-50%,-50%)';
+        modal.style.background = '#fff';
+        modal.style.border = '1px solid #ccc';
+        modal.style.borderRadius = '8px';
+        modal.style.padding = '16px';
+        modal.style.zIndex = 9999;
+        modal.style.maxWidth = '900px';
+        modal.style.maxHeight = '80vh';
+        modal.style.overflow = 'auto';
+        modal.innerHTML = `
+          <div id="confession-modal-body"></div>
+          <div style="text-align:right;margin-top:12px;"><button id="confession-modal-close" style="padding:6px 10px;">Close</button></div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById('confession-modal-close').addEventListener('click', () => { modal.remove(); });
+      }
+      const body = document.getElementById('confession-modal-body');
+      const topic = escapeHtml(c.topic || '');
+      const rec = escapeHtml(c.recipient || c.to || c.email || c.target || c.recipient_email || c.to_address || '');
+      const sent = escapeHtml(c.sentiment || '');
+      const msg = escapeHtml(c.message || c.text || c.confession || '');
+      const summary = escapeHtml(c.summary || '');
+      const ts = c.created_at || c.createdAt || c.timestamp || c.time || c.date || '';
+      const timeStr = ts ? (new Date(ts)).toLocaleString() : '';
+      body.innerHTML = `
+        <div style="font-size:14px;color:#666;margin-bottom:8px;">${timeStr} • Recipient: ${rec} • Topic: ${topic} • <strong style='color:#a33'>${sent}</strong></div>
+        <div style="white-space:pre-wrap;color:#000;background:#f8f8f8;padding:12px;border-radius:6px;border:1px solid #eee;">${msg}</div>
+        ${summary ? `<div style="margin-top:10px;font-size:13px;color:#333;"><strong>Summary:</strong><div style="white-space:pre-wrap;margin-top:6px;">${summary}</div></div>` : ''}
+      `;
+    }
+
+    // Delegated click handler for Show buttons inside the confessions table
+    (function attachShowDelegation(){
+      const tbody = document.getElementById('confessions-body');
+      if (!tbody) return;
+      tbody.addEventListener('click', (e) => {
+        const btn = e.target.closest && e.target.closest('.show-confession-btn');
+        if (!btn) return;
+        const id = btn.dataset && btn.dataset.id;
+        if (id) showConfessionById(id);
+      });
+    })();
+    // Search UI behavior
+    const searchMode = document.getElementById('search-mode');
+    const searchSentiment = document.getElementById('search-sentiment');
+    const searchTopic = document.getElementById('search-topic');
+    const searchDate = document.getElementById('search-date');
+    const sentimentSortControls = document.getElementById('sentiment-sort-controls');
+    const sortSentAscBtn = document.getElementById('sort-sent-asc');
+    const sortSentDescBtn = document.getElementById('sort-sent-desc');
+    let sentimentSort = ''; // '', 'sentimentScore_asc', 'sentimentScore_desc'
+
+    function updateSearchInputs() {
+      const mode = searchMode.value;
+      // No free-text input anymore; show none for 'all'
+      searchSentiment.style.display = mode === 'sentiment' ? '' : 'none';
+      sentimentSortControls.style.display = mode === 'sentiment' ? '' : 'none';
+      searchTopic.style.display = mode === 'topic' ? '' : 'none';
+      searchDate.style.display = mode === 'date' ? '' : 'none';
+    }
+    searchMode.addEventListener('change', updateSearchInputs);
+    // initial state
+    updateSearchInputs();
+
+    document.getElementById('search-btn').addEventListener('click', function() {
+      loadConfessions();
+    });
+    // Sort buttons for sentiment score
+    if (sortSentAscBtn) sortSentAscBtn.addEventListener('click', function() {
+      // Require a sentiment selection before sorting
+      const sel = (searchSentiment || {}).value || '';
+      if (!sel) return alert('Please select a sentiment before sorting.');
+      // Toggle: clicking same button clears the sort
+      if (sentimentSort === 'sentimentScore_asc') {
+        sentimentSort = '';
+        sortSentAscBtn.style.opacity = '0.6';
+      } else {
+        sentimentSort = 'sentimentScore_asc';
+        sortSentAscBtn.style.opacity = '1';
+        if (sortSentDescBtn) sortSentDescBtn.style.opacity = '0.6';
+      }
+      loadConfessions();
+    });
+    if (sortSentDescBtn) sortSentDescBtn.addEventListener('click', function() {
+      const sel = (searchSentiment || {}).value || '';
+      if (!sel) return alert('Please select a sentiment before sorting.');
+      if (sentimentSort === 'sentimentScore_desc') {
+        sentimentSort = '';
+        sortSentDescBtn.style.opacity = '0.6';
+      } else {
+        sentimentSort = 'sentimentScore_desc';
+        if (sortSentAscBtn) sortSentAscBtn.style.opacity = '0.6';
+        sortSentDescBtn.style.opacity = '1';
+      }
+      loadConfessions();
+    });
+    document.getElementById('display-all-btn').addEventListener('click', function() {
+      // clear all inputs and show all confessions
+      try { searchSentiment.value = ''; } catch(e) {}
+      try { searchTopic.value = ''; } catch(e) {}
+      try { searchDate.value = ''; } catch(e) {}
+      sentimentSort = '';
+      if (sortSentAscBtn) sortSentAscBtn.style.opacity = '1';
+      if (sortSentDescBtn) sortSentDescBtn.style.opacity = '1';
+      searchMode.value = 'all';
+      updateSearchInputs();
+      loadConfessions();
+    });
+
+    // Client-side summary generator used as fallback or enhancement
+    function generateClientSummary(topicData = {labels:[],counts:[]}, sentimentData = {labels:[],counts:[]}, wordList = []) {
+      const ta = document.getElementById('analytics-summary');
+      // total confessions estimate from topic or sentiment sums
+      const totalFromTopics = topicData.counts ? topicData.counts.reduce((a,b)=>a+b,0) : 0;
+      const totalFromSent = sentimentData.counts ? sentimentData.counts.reduce((a,b)=>a+b,0) : 0;
+      const total = Math.max(totalFromTopics, totalFromSent);
+      const parts = [];
+      if (total > 0) parts.push(`Total confessions (approx): ${total}.`);
+      if (topicData.labels && topicData.labels.length>0) {
+        const top = topicData.labels.slice(0,3).map((l,i)=>`${l} (${topicData.counts[i] || 0})`).join('; ');
+        parts.push(`Top topics: ${top}.`);
+      }
+      if (sentimentData.labels && sentimentData.labels.length>0) {
+        const sent = sentimentData.labels.map((l,i)=>`${l} (${sentimentData.counts[i]||0})`).join(', ');
+        parts.push(`Sentiment: ${sent}.`);
+      }
+      if (wordList && wordList.length>0) {
+        const topwords = wordList.slice(0,8).map(w=>w[0]).join(', ');
+        parts.push(`Common keywords: ${topwords}.`);
+      }
+      ta.value = parts.join(' ');
+      return ta.value;
+    }
+
+  // UUM Satisfaction donut chart
+  let uumChart = null;
+  async function drawUumSatisfaction() {
+      const canvas = document.getElementById('uum-satisfaction-chart');
+      const note = document.getElementById('uum-satisfaction-note');
+      try {
+        const res = await fetch('/api/sentimentdist/overall');
+        if (!res.ok) throw new Error('Failed to load sentiment distribution');
+        const data = await res.json();
+        const sentiments = data.sentiments || [];
+    let positive = 0, negative = 0, neutral = 0;
+        sentiments.forEach(s => {
+          const label = (s.sentiment || '').toLowerCase();
+          if (label.includes('pos') || label.includes('positive')) positive += (s.count || 0);
+          else if (label.includes('neg') || label.includes('negative')) negative += (s.count || 0);
+          else neutral += (s.count || 0);
+        });
+
+  // Per request: include neutral confessions as part of 'positive' (satisfied)
+  positive += neutral;
+  // Compute percentages relative to positive (including neutral) + negative
+  const totalConfessions = positive + negative;
+  const posPct = totalConfessions > 0 ? Math.round((positive / totalConfessions) * 10000) / 100 : 0;
+  const negPct = totalConfessions > 0 ? Math.round((negative / totalConfessions) * 10000) / 100 : 0;
+
+  const labels = ['Satisfied (%)', 'Dissatisfied (%)'];
+  const values = [posPct, negPct];
+  const colors = ['#4ecdc4', '#e63946'];
+
+        if (uumChart) uumChart.destroy();
+        uumChart = new Chart(canvas, {
+          type: 'doughnut',
+          data: {
+            labels,
+            datasets: [{ data: values, backgroundColor: colors, borderColor: '#fff', borderWidth: 2 }]
+          },
+          options: {
+            responsive: false,
+            plugins: {
+              legend: { position: 'bottom' },
+              tooltip: { callbacks: { label: function(ctx) { return `${ctx.label}: ${ctx.raw}%`; } } }
+            }
+          }
+        });
+
+  note.textContent = `Satisfied (positive + neutral): ${positive} — Dissatisfied: ${negative} — Total confessions considered: ${totalConfessions}.`;
+
+    // Update table cells to the right of the chart
+        function fmtCount(n) { return (typeof n === 'number') ? n.toString() : '—'; }
+        function fmtPct(n) { return (typeof n === 'number' && !isNaN(n)) ? `${n}%` : '—'; }
+        // absolute counts for UUM overall
+        document.getElementById('uum-count-positive').textContent = fmtCount(positive);
+        document.getElementById('uum-count-negative').textContent = fmtCount(negative);
+  document.getElementById('uum-count-total').textContent = fmtCount(totalConfessions);
+  // removed total-students row per updated calculation (neutral counts as positive)
+
+    // percentages (display with 2 decimals)
+    const posPctDisplay = posPct;
+    const negPctDisplay = negPct;
+    document.getElementById('uum-pct-positive').textContent = fmtPct(posPctDisplay);
+    document.getElementById('uum-pct-negative').textContent = fmtPct(negPctDisplay);
+    document.getElementById('uum-pct-total').textContent = totalConfessions > 0 ? '100%' : '—';
+
+        // Compute Department counts (HEA/HEP) based on which confessions were sent to HEA or HEP
+        // Prefer using already-loaded confessions to avoid extra network calls
+        async function computeDepartmentCounts() {
+          let confs = window.allConfessions;
+          if (!Array.isArray(confs) || confs.length === 0) {
+            // fallback: fetch from admin confessions endpoint
+            try {
+              const r = await fetch('/admin/confessions');
+              if (r.ok) confs = await r.json();
+              else confs = [];
+            } catch (e) {
+              confs = [];
+            }
+          }
+
+          // Compute department stats based on total confessions received for each email.
+          // Strategy (avoids requiring DB schema changes):
+          // 1) Count any confession that explicitly lists a recipient matching the department email.
+          // 2) If a confession has no recipient, fall back to topic->department mapping (mental -> HEA, academic -> HEP).
+          // This lets you compute dissatisfaction = negative_count / total_received_for_that_email without altering the DB.
+          const emailHea = 'HAIKALJOHARI4747@GMAIL.COM';
+          const emailHep = 'HAIDILAH@GMAIL.COM';
+          let heaTotal = 0, hepTotal = 0;
+          let heaNeg = 0, hepNeg = 0;
+          confs.forEach(c => {
+            const recRaw = (c.recipient || c.to || c.email || c.target || c.recipient_email || c.to_address || '') + '';
+            const rec = recRaw.toString().toUpperCase();
+            const topic = (c.topic || '').toString().toLowerCase();
+            const sent = (c.sentiment || '').toString().toLowerCase();
+
+            // If a recipient is present and matches one of the department emails, count it for that dept
+            if (rec && rec.includes(emailHea)) {
+              heaTotal++;
+              if (sent && (sent === 'negative' || sent === 'neg' || sent.includes('neg'))) heaNeg++;
+              return;
+            }
+            if (rec && rec.includes(emailHep)) {
+              hepTotal++;
+              if (sent && (sent === 'negative' || sent === 'neg' || sent.includes('neg'))) hepNeg++;
+              return;
+            }
+
+            // No explicit recipient found — fall back to topic mapping to attribute to a department
+            // Correct mapping: academic -> HEA, mental -> HEP
+            if (topic && (topic.includes('academic') || topic.includes('akadem') || topic.includes('study'))) {
+              heaTotal++;
+              if (sent && (sent === 'negative' || sent === 'neg' || sent.includes('neg'))) heaNeg++;
+              return;
+            }
+            if (topic && (topic.includes('mental') || topic.includes('mental health') || topic.includes('mental-health'))) {
+              hepTotal++;
+              if (sent && (sent === 'negative' || sent === 'neg' || sent.includes('neg'))) hepNeg++;
+              return;
+            }
+            // Otherwise ignore (unable to attribute to HEA or HEP)
+          });
+
+          const departmentTotal = heaTotal + hepTotal;
+          // dissatisfaction percentages per department (negative / total received for that email)
+          const heaDissPct = heaTotal > 0 ? Math.round((heaNeg / heaTotal) * 10000) / 100 : 0;
+          const hepDissPct = hepTotal > 0 ? Math.round((hepNeg / hepTotal) * 10000) / 100 : 0;
+          const avgDissPct = departmentTotal > 0 ? Math.round(((heaDissPct + hepDissPct) / 2 + Number.EPSILON) * 100) / 100 : 0;
+
+          // populate Department table
+          const deptTotalEl = document.getElementById('department-count-total');
+          const deptHeaEl = document.getElementById('department-count-hea');
+          const deptHepEl = document.getElementById('department-count-hep');
+          const deptPctHeaEl = document.getElementById('department-pct-hea');
+          const deptPctHepEl = document.getElementById('department-pct-hep');
+          const deptPctTotalEl = document.getElementById('department-pct-total');
+          if (deptTotalEl) deptTotalEl.textContent = fmtCount(departmentTotal);
+          if (deptHeaEl) deptHeaEl.textContent = fmtCount(heaTotal);
+          if (deptHepEl) deptHepEl.textContent = fmtCount(hepTotal);
+          if (deptPctHeaEl) deptPctHeaEl.textContent = heaTotal > 0 ? `${heaDissPct}%` : '—';
+          if (deptPctHepEl) deptPctHepEl.textContent = hepTotal > 0 ? `${hepDissPct}%` : '—';
+          if (deptPctTotalEl) deptPctTotalEl.textContent = departmentTotal > 0 ? `${avgDissPct}%` : '—';
+
+          // Draw department donut chart showing dissatisfaction percentage per department
+          const deptCanvas = document.getElementById('department-dissatisfaction-chart');
+          if (deptCanvas) {
+            deptCanvas.style.display = '';
+            if (window.departmentChart) { try { window.departmentChart.destroy(); } catch(e){} window.departmentChart = null; }
+            const ctx = deptCanvas.getContext('2d');
+            // use the percentages as values so the doughnut shows relative dissatisfaction between departments
+            const displayData = [heaDissPct > 0 ? heaDissPct : 0.01, hepDissPct > 0 ? hepDissPct : 0.01];
+            window.departmentChart = new Chart(ctx, {
+              type: 'doughnut',
+              data: {
+                labels: ['HEA (%)', 'HEP (%)'],
+                datasets: [{ data: displayData, backgroundColor: ['#e63946', '#f4a261'], borderColor: '#fff', borderWidth: 2 }]
+              },
+              options: {
+                responsive: false,
+                plugins: {
+                  legend: { position: 'bottom' },
+                  tooltip: { callbacks: { label: function(ctx) {
+                    const idx = ctx.dataIndex;
+                    const pct = idx === 0 ? heaDissPct : hepDissPct;
+                    const total = idx === 0 ? heaTotal : hepTotal;
+                    const neg = idx === 0 ? heaNeg : hepNeg;
+                    return `${ctx.label}: ${pct}% (${neg}/${total})`;
+                  } } },
+                  title: { display: false }
+                }
+              }
+            });
+          }
+        }
+
+        // Run the department computation but don't block the main chart render
+        computeDepartmentCounts().catch(e => { console.error('Department counts error:', e); });
+    
+        // Show all confessions delivered to a department email
+        async function getAllConfessions() {
+          if (Array.isArray(window.allConfessions) && window.allConfessions.length>0) return window.allConfessions;
+          try {
+            const r = await fetch('/admin/confessions');
+            if (!r.ok) return [];
+            const d = await r.json();
+            window.allConfessions = d;
+            return d;
+          } catch (e) { return []; }
+        }
+
+        function matchRecipientFields(c) {
+          // return a joined string of likely recipient fields for robust matching
+          return ((c.recipient || c.to || c.email || c.target || c.recipient_email || c.to_address || '') + '').toString().toUpperCase();
+        }
+
+        async function showDeptConfessions(dept) {
+          const confs = await getAllConfessions();
+          const emailHea = 'HAIKALJOHARI4747@GMAIL.COM';
+          const emailHep = 'HAIDILAH@GMAIL.COM';
+          const matches = confs.filter(c => {
+            const rec = matchRecipientFields(c);
+            if (!rec) return false;
+            if (dept === 'HEA') return rec.includes(emailHea) || rec.includes('HEA') || rec.includes('AKADEMIK');
+            if (dept === 'HEP') return rec.includes(emailHep) || rec.includes('HEP') || rec.includes('PELAJAR');
+            return false;
+          });
+          // mark which of these would be classified into the department by topic rules
+          const annotated = matches.map(c => {
+            const topic = (c.topic || '').toString().toLowerCase();
+            let classified = false;
+            if (dept === 'HEA' && (topic.includes('academic') || topic.includes('akadem') || topic.includes('study'))) classified = true;
+            if (dept === 'HEP' && (topic.includes('mental') || topic.includes('mental health'))) classified = true;
+            return { row: c, classified };
+          });
+          renderDeptList(dept, annotated);
+        }
+
+        // Show combined details for both departments in a single panel
+        async function showDeptDetails() {
+          const confs = await getAllConfessions();
+          const emailHea = 'HAIKALJOHARI4747@GMAIL.COM';
+          const emailHep = 'HAIDILAH@GMAIL.COM';
+
+          const heaMatches = confs.filter(c => {
+            const rec = matchRecipientFields(c);
+            if (!rec) return false;
+            return rec.includes(emailHea) || rec.includes('HEA') || rec.includes('AKADEMIK');
+          }).map(c => ({ row: c, classified: ((c.topic||'').toString().toLowerCase().includes('mental')) }));
+
+          const hepMatches = confs.filter(c => {
+            const rec = matchRecipientFields(c);
+            if (!rec) return false;
+            return rec.includes(emailHep) || rec.includes('HEP') || rec.includes('PELAJAR');
+          }).map(c => ({ row: c, classified: ((c.topic||'').toString().toLowerCase().includes('academic') || (c.topic||'').toString().toLowerCase().includes('akadem')) }));
+
+          // Create modal overlay
+          let modal = document.getElementById('dept-details-modal');
+          if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'dept-details-modal';
+            modal.style.position = 'fixed';
+            modal.style.left = 0;
+            modal.style.top = 0;
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.background = 'rgba(0,0,0,0.5)';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.zIndex = 9999;
+            document.body.appendChild(modal);
+          }
+
+          const makeItemsHtml = (list) => {
+            if (!list || list.length === 0) return '<div style="color:#000;padding:8px">No confessions found.</div>';
+            return list.map(item => {
+              const c = item.row || item;
+              const id = c.id || c._id || '';
+              const ts = c.created_at || c.createdAt || c.timestamp || c.time || c.date || '';
+              const timeStr = ts ? (new Date(ts)).toLocaleString() : '';
+              const sentiment = escapeHtml((c.sentiment || '').toString());
+              const topic = escapeHtml((c.topic || '').toString());
+              const summary = escapeHtml((c.summary || '').toString());
+              return `<div style="padding:8px;border-bottom:1px dashed #eee">` +
+                `<div style="font-size:13px;color:#000;margin-bottom:6px">${id ? '#'+id+' • ' : ''}${timeStr} • <strong style='color:#a33'>${sentiment}</strong> • Topic: ${topic}</div>` +
+                `<div style="color:#000;margin-bottom:6px">Summary: ${summary || '<em>—</em>'}</div>` +
+                `<div><button class="send-button" style="padding:6px 8px;font-size:12px;" onclick="showConfessionById('${id}')">Show Full</button></div>` +
+                `</div>`;
+            }).join('\n');
+          };
+
+          const contentHtml = `
+            <div style="background:#fff;color:#000;border-radius:8px;max-width:90%;max-height:90%;overflow:auto;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,0.3)">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <h3 style="margin:0">Department Details</h3>
+                <button id="dept-details-close" class="send-button" style="background:#777;color:#000;padding:6px 10px;border-radius:6px">Close</button>
+              </div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap">
+                <div style="flex:1 1 45%;min-width:280px">
+                  <h4 style="margin:6px 0">Hal Ehwal Akademik (HEA) — ${heaMatches.length}</h4>
+                  ${makeItemsHtml(heaMatches)}
+                </div>
+                <div style="flex:1 1 45%;min-width:280px">
+                  <h4 style="margin:6px 0">Hal Ehwal Pelajar (HEP) — ${hepMatches.length}</h4>
+                  ${makeItemsHtml(hepMatches)}
+                </div>
+              </div>
+            </div>
+          `;
+
+          modal.innerHTML = contentHtml;
+          modal.style.display = 'flex';
+
+          const closeBtn = document.getElementById('dept-details-close');
+          if (closeBtn) closeBtn.addEventListener('click', () => { modal.style.display = 'none'; modal.innerHTML = ''; });
+          // Close when clicking outside the content
+          modal.addEventListener('click', (ev) => {
+            if (ev.target === modal) { modal.style.display = 'none'; modal.innerHTML = ''; }
+          });
+        }
+
+        function renderDeptList(dept, list) {
+          // create (or reuse) a panel under the confessions table to show these results
+          let panel = document.getElementById('dept-list-panel');
+          if (!panel) {
+            panel = document.createElement('div');
+            panel.id = 'dept-list-panel';
+            panel.style.marginTop = '18px';
+            panel.style.padding = '12px';
+            panel.style.background = '#fff';
+            panel.style.border = '1px solid #e0e0e0';
+            panel.style.borderRadius = '8px';
+            panel.style.maxHeight = '360px';
+            panel.style.overflow = 'auto';
+            const container = document.querySelector('.admin-container');
+            container.appendChild(panel);
+          }
+          panel.innerHTML = `<h3 style="margin:6px 0 8px;">${dept} — ${list.length} delivered confession${list.length===1?'':'s'}</h3>`;
+          if (!list.length) {
+            panel.innerHTML += '<div style="color:#000;padding:8px">No confessions found for this department.</div>';
+            return;
+          }
+          const rows = list.map(item => {
+            const c = item.row || item;
+            const classified = item.classified === true;
+            const id = c.id || c._id || '';
+            const txtFull = (c.text || c.confession || c.message || c.content || '').toString();
+            const txt = escapeHtml(txtFull).slice(0,100);
+            const topic = escapeHtml((c.topic || '').toString());
+            const rec = escapeHtml((c.recipient || c.to || c.email || c.target || c.recipient_email || c.to_address || '').toString());
+            const sent = escapeHtml((c.sentiment || '').toString());
+            const ts = c.created_at || c.createdAt || c.timestamp || c.time || c.date || '';
+            const timeStr = ts ? (new Date(ts)).toLocaleString() : '';
+       return `<div style="padding:8px;border-bottom:1px dashed #eee">`+
+         `<div style="font-size:13px;color:#000;margin-bottom:6px">${id ? '#'+id+' • ' : ''}${timeStr} • Recipient: ${rec} • Topic: ${topic} • <strong style='color:#a33'>${sent}</strong> ${classified?"<span style='color:green;margin-left:8px'>(classified)</span>":""}`+
+         ` <button class="send-button" style="margin-left:8px;padding:4px 8px;font-size:12px;" onclick="showConfessionById('${id}')">Show</button></div>`+
+         `<div style="color:#000">${txt}${txtFull.length>100?'…':''}</div></div>`;
+          }).join('\n');
+          panel.innerHTML += rows;
+          panel.scrollTop = 0;
+        }
+
+        // wire up the buttons (they may not exist if user reverted earlier)
+        try {
+          const showDetailsBtn = document.getElementById('show-dept-details-btn');
+          if (showDetailsBtn) showDetailsBtn.addEventListener('click', ()=> showDeptDetails());
+        } catch (e) { console.warn('Dept details button not found', e); }
+      } catch (err) {
+        console.error('UUM satisfaction error:', err);
+        note.textContent = 'Unable to load satisfaction data.';
+        if (uumChart) { uumChart.destroy(); uumChart = null; }
+      }
+    }
+
+    // Call drawUumSatisfaction on admin login auto-run and Confirm
+    const originalLogin = document.getElementById('login-btn').onclick;
+    // After login logic runs, draw UUM chart — handled already in login flow; ensure we call after auto-run
+    // Also call draw after Confirm is clicked (wordcloud-btn handler calls analytics funcs already)
+    (function attachUumHooks(){
+      const loginBtn = document.getElementById('login-btn');
+      loginBtn.addEventListener('click', function(){
+        // small delay to allow existing login flow to render analytics
+        setTimeout(() => { drawUumSatisfaction(); }, 700);
+      });
+      const wcBtn = document.getElementById('wordcloud-btn');
+      wcBtn.addEventListener('click', function(){ setTimeout(()=>{ drawUumSatisfaction(); }, 600); });
+    })();
+  </script>
+  <script>
+    // Nav active-link helper + page transition handling
+    (function() {
+      const links = document.querySelectorAll('.nav-link[data-page]');
+      // enter animation: remove preload on DOMContentLoaded
+      window.addEventListener('DOMContentLoaded', () => { requestAnimationFrame(() => document.body.classList.remove('page-preload')); });
+
+      links.forEach(a => {
+        a.addEventListener('click', (ev) => {
+          const href = a.getAttribute('href');
+          // anchors (hashes) shouldn't trigger exit animation
+          if (!href || href.startsWith('#')) {
+            links.forEach(x => x.classList.remove('active'));
+            a.classList.add('active');
+            return;
+          }
+          const current = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+          const target = href.split('/').pop().toLowerCase();
+          if (current === target) {
+            links.forEach(x => x.classList.remove('active'));
+            a.classList.add('active');
+            return;
+          }
+          ev.preventDefault();
+          links.forEach(x => x.classList.remove('active'));
+          a.classList.add('active');
+          document.body.classList.add('page-exit');
+          setTimeout(() => { window.location.href = href; }, 340);
+        });
+      });
+
+      // set active on load by pathname
+      const path = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+      let selector = '.nav-link[data-page="index"]';
+      if (path === 'dashboard.html') selector = '.nav-link[data-page="dashboard"]';
+      if (path === 'admin.html') selector = '.nav-link[data-page="admin"]';
+      const el = document.querySelector(selector);
+      if (el) el.classList.add('active');
+    })();
+    // Back button behavior for admin/dashboard pages
+    (function() {
+      const back = document.getElementById('back-btn');
+      if (!back) return;
+      back.addEventListener('click', (ev) => {
+        if (window.history && window.history.length > 1) return window.history.back();
+        window.location.href = 'index.html';
+      });
+    })();
+  </script>
+</body>
+</html>
